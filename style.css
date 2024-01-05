@@ -1,0 +1,44 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f2f2f2; /* Default background color */
+    transition: background-color 0.5s ease;
+}
+
+#reading-content, #day-info {
+    max-width: 600px;
+    width: 100%;
+    margin: 20px;
+    padding: 20px;
+    background-color: #eaeaea;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.75);
+    text-align: center;
+    border-radius: 15px;
+}
+
+#day-info {
+    max-width: 600px;
+    width: 100%;
+    margin: 20px;
+    padding: 20px;
+    background-color: #eaeaea;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.75);
+    text-align: center;
+}
+
+#day-info h2 {
+    color: #333;
+}
+
+#day-info dt {
+    text-align: center;
+}
+
+#day-info dd {
+    text-align: center;
+}

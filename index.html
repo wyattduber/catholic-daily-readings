@@ -3,70 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
     <title>Daily Catholic Readings</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #f2f2f2; /* Default background color */
-            transition: background-color 0.5s ease;
-        }
-
-        #reading-content {
-            max-width: 600px;
-            text-align: center;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-    </style>
 </head>
 <body>
-<div id="date">
-    Loading Date...
-</div>
 <div id="reading-content">
     <!-- Reading content will be dynamically inserted here -->
     Loading...
 </div>
 
-<script>
-    // Replace 'your_catholic_readings_api_url' with the actual API endpoint
-    const apiURL = 'your_catholic_readings_api_url';
-    const dateURL = 'http://calapi.inadiutorium.cz/api/v0/en/calendars/general-en/today';
-
-    // Fetch data from the API
-    fetch(apiURL)
-        .then(response => response.json())
-        .then(data => {
-            // Update your webpage with the fetched data
-            document.getElementById('reading-content').innerHTML = `<h2>${data.title}</h2><p>${data.reading}</p>`;
-        })
-        .catch(error => console.error('Error fetching data:', error));
-
-    // Function to determine liturgical season (example)
-    function getLiturgicalSeason() {
-        // Implement your logic here
-        // This could be based on the current date or information provided by the API
-        // Return a string representing the liturgical season (e.g., "Advent", "Lent", "Ordinary Time", etc.)
-
-        fetch(dateURL)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('date').innerHTML = `<p>${data.date}</p>`;
-                return data.celebrations[0].colour;
-            })
-            .catch(error => console.error('Error fetching data:', error))
-    }
-
-    // Determine liturgical season and update background color
-    document.body.style.backgroundColor = getLiturgicalSeason();
-</script>
+<div id="day-info">
+    <!-- Day information will be dynamically inserted here -->
+    Loading...
+</div>
 </body>
+<script src="script.js"></script>
 </html>
