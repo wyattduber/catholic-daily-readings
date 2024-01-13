@@ -1,6 +1,6 @@
 // Replace 'your_catholic_readings_api_url' with the actual API endpoint
 const apiURL = 'your_catholic_readings_api_url';
-const dateURL = 'http://calapi.inadiutorium.cz/api/v0/en/calendars/general-en/2023/11/13';
+const dateURL = 'http://calapi.inadiutorium.cz/api/v0/en/calendars/general-en/tomorrow'; // Has to be tomorrow because the today endpoint is one day behind
 
 // Fetch data from the API
 fetch(apiURL)
@@ -30,10 +30,10 @@ fetch(dateURL)
 
         // Set Colors
         var colors = translateColor(data.celebrations[0].colour)
-        //document.body.style.backgroundImage = 'linear-gradient(240deg, ' + colors[0] + ', ' + colors[1] + ');';
+        document.body.style.backgroundImage = 'linear-gradient(240deg, ' + colors[0] + ', ' + colors[1] + ');';
         document.getElementById('day-info').style.backgroundColor = colors[2];
         document.getElementById('reading-content').style.backgroundColor = colors[2];
-        document.body.style.backgroundColor = colors[0];
+        //document.body.style.backgroundColor = colors[0];
 
         // Go through all celebrations for the day and list them
         document.getElementById('day-info').innerHTML += `<h2>Celebrations</h2>`;
