@@ -1,6 +1,6 @@
 // Replace 'your_catholic_readings_api_url' with the actual API endpoint
 const apiURL = 'your_catholic_readings_api_url';
-const dateURL = 'https://api.wyattduber.com/api/daily/today';
+const dateURL = 'https://api.wyattduber.com/api/liturgical-day/today/';
 
 // Fetch data from the API
 fetch(apiURL)
