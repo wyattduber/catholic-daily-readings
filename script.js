@@ -52,7 +52,10 @@ fetch(dateURL)
         }
 
     })
-    .catch(error => console.error('Error fetching data:', error))
+    .catch(error => {
+	console.error('Error fetching data:', error);
+	document.getElementById('day-info').innerHTML = `<p>An Error occured while loading the daily readings.</p>`;
+    });
 
 function translateColor(color) {
     switch (color) { // Returns Background Gradient 1, Background Gradient 2, and Box Color
