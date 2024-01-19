@@ -1,56 +1,45 @@
-// Church Calendar API
-const dateURL = 'https://api.wyattduber.com/api/liturgical-day/today/';
+function main() {
+    const data = getLiturgicalDay();
 
-// Function to determine liturgical season color and date
-fetch(dateURL)
-    .then(response => response.json())
-    .then(data => {
-        var dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        var date = new Date(data.date);
+    var dateOptions = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
+    var date = new Date(data.date);
 
-        // Add Header API Info (date, season, week, etc)
-        document.getElementById('day-info').innerHTML =
+    // Add Header API Info (date, season, week, etc)
+    document.getElementById('day-info').innerHTML =
         `
-            <h2>Season: ${capFirstLetter(data.season)}</h2>
-            <h3>${date.toLocaleDateString("en-US", dateOptions)}</h3>
-        `;
+        <h2>Season: ${capFirstLetter(data.season)}</h2>
+        <h3>${date.toLocaleDateString("en-US", dateOptions)}</h3>
+    `;
 
-        // Set Colors
-        var colors = translateColor(data.celebrations[0].colour)
-        document.body.style.backgroundImage = 'linear-gradient(240deg, ' + colors[0] + ', ' + colors[1] + ');';
-        document.getElementById('day-info').style.backgroundColor = colors[2];
-        document.getElementById('reading-content').style.backgroundColor = colors[2];
-        //document.body.style.backgroundColor = colors[0];
+    // Set Colors
+    var colors = translateColor(data.celebrations[0].colour)
+    document.body.style.backgroundImage = 'linear-gradient(240deg, ' + colors[0] + ', ' + colors[1] + ');';
+    document.getElementById('day-info').style.backgroundColor = colors[2];
+    document.getElementById('reading-content').style.backgroundColor = colors[2];
+    //document.body.style.backgroundColor = colors[0];
 
-        // Go through all celebrations for the day and list them
-        document.getElementById('day-info').innerHTML += `<h2>Celebrations</h2>`;
-        for (var i = 0; i < data.celebrations.length; i++) {
-            var celebration = data.celebrations[i];
+    // Go through all celebrations for the day and list them
+    document.getElementById('day-info').innerHTML += `<h2>Celebrations</h2>`;
+    for (var i = 0; i < data.celebrations.length; i++) {
+        var celebration = data.celebrations[i];
 
-            document.getElementById('day-info').innerHTML +=
+        document.getElementById('day-info').innerHTML +=
             `
-                <dl>
-                    <dt>${celebration.title}</dt>
-                    <dd>Rank: ${capFirstLetter(celebration.rank)}</dd>
-                    <dd>Rank Number: ${celebration.rank_num}</dd>
-                    <dd>Color: ${capFirstLetter(celebration.colour)}</dd>
-                </dl>
-            `;
-        }
+            <dl>
+                <dt>${celebration.title}</dt>
+                <dd>Color: ${capFirstLetter(celebration.colour)}</dd>
+            </dl>
+        `;
+    }
 
-        // Then do readings page
-	getDailyReadings(data.date)
-	    .then((dailyReadingsData) => {
-        console.log(dailyReadingsData);
-        document.getElementById('reading-content').innerHTML = `<h2>${data.title}</h2><p>${data.reading}</p>`;
-  })
-  .catch((error) => console.error(error));
-
-    })
-    .catch(error => {
-	console.error('Error fetching data:', error);
-	document.getElementById('day-info').innerHTML = `<p>An Error occured while loading the daily readings.</p>`;
-    });
+    // Then do readings page
+    getDailyReadings(data.date)
+        .then((dailyReadingsData) => {
+            console.log(dailyReadingsData);
+            document.getElementById('reading-content').innerHTML = `<h2>${data.title}</h2><p>${data.reading}</p>`;
+        })
+        .catch((error) => console.error(error));
+}
 
 function translateColor(color) {
     switch (color) { // Returns Background Gradient 1, Background Gradient 2, and Box Color
@@ -69,6 +58,19 @@ function translateColor(color) {
 
 function capFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+async function getLiturgicalDay() {
+    const dateURL = 'https://api.wyattduber.com/api/liturgical-day/today/';
+
+// Function to determine liturgical season color and date
+    fetch(dateURL).then(response => response.json()).then(data => {
+        return data
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+        document.getElementById('day-info').innerHTML = `<p>An Error occured while loading the daily readings.</p>`;
+    });
 }
 
 async function getDailyReadings(dateStr) {
@@ -106,3 +108,6 @@ async function getDailyReadings(dateStr) {
 
   return readings;
 }
+
+// Run the script
+main();
