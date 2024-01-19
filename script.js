@@ -1,5 +1,13 @@
-function main() {
-    const data = getLiturgicalDay();
+async function main() {
+    let data = await getLiturgicalDay();
+
+    let dailyReadingsData = await getDailyReadings(data.date);
+
+    for (const key in dailyReadingsData) {
+        if (dailyReadingsData.hasOwnProperty(key)) {
+            console.log(`${key}: ${dailyReadingsData[key]}`);
+        }
+    }
 
     var dateOptions = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
     var date = new Date(data.date);
@@ -33,12 +41,9 @@ function main() {
     }
 
     // Then do readings page
-    getDailyReadings(data.date)
-        .then((dailyReadingsData) => {
-            console.log(dailyReadingsData);
-            document.getElementById('reading-content').innerHTML = `<h2>${data.title}</h2><p>${data.reading}</p>`;
-        })
-        .catch((error) => console.error(error));
+
+
+    document.getElementById('reading-content').innerHTML = `<p>${data.first_reading}</p>`;
 }
 
 function translateColor(color) {
@@ -52,7 +57,7 @@ function translateColor(color) {
         case "gold":
             return ["#d4af37", "#DEC05D", "#DCC681"]
         default:
-            return ["white", ""]
+            return ["white", "", ""]
     }
 }
 
@@ -61,52 +66,54 @@ function capFirstLetter(str) {
 }
 
 async function getLiturgicalDay() {
-    const dateURL = 'https://api.wyattduber.com/api/liturgical-day/today/';
 
-// Function to determine liturgical season color and date
-    fetch(dateURL).then(response => response.json()).then(data => {
-        return data
-    })
-    .catch(error => {
+    try {
+        const url = `http://localhost:7373/getLiturgicalDay/today`;
+        const response = await fetch(url)
+        const data = await response.json();
+        return data;
+    } catch (error) {
         console.error('Error fetching data:', error);
-        document.getElementById('day-info').innerHTML = `<p>An Error occured while loading the daily readings.</p>`;
-    });
+        document.getElementById('day-info').innerHTML = `<p>An error occurred while loading the liturgical day.</p>`;
+        throw error; // Re-throw the error if needed
+    }
 }
 
 async function getDailyReadings(dateStr) {
-  const url = `http://localhost:7373/getDailyReadings/${dateStr}`;
-  const response = await fetch(url);
-  const html = await response.text();
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
+    try {
+        const url = `http://localhost:7373/getDailyReadings/${dateStr}`;
+        const doc = await fetch(url);
+        const readings = {};
 
-  const readings = {};
+        // Extract first reading
+        const firstReading = doc.querySelector('.first-reading');
+        if (firstReading) {
+            readings.first_reading = firstReading.textContent.trim();
+        }
 
-  // Extract first reading
-  const firstReading = doc.querySelector('.first-reading');
-  if (firstReading) {
-    readings.first_reading = firstReading.textContent.trim();
-  }
+        // Extract second reading
+        const secondReading = doc.querySelector('.second-reading');
+        if (secondReading) {
+            readings.second_reading = secondReading.textContent.trim();
+        }
 
-  // Extract second reading
-  const secondReading = doc.querySelector('.second-reading');
-  if (secondReading) {
-    readings.second_reading = secondReading.textContent.trim();
-  }
+        // Extract responsorial psalm
+        const responsorialPsalm = doc.querySelector('.responsorial-psalm');
+        if (responsorialPsalm) {
+            readings.responsorial_psalm = responsorialPsalm.textContent.trim();
+        }
 
-  // Extract responsorial psalm
-  const responsorialPsalm = doc.querySelector('.responsorial-psalm');
-  if (responsorialPsalm) {
-    readings.responsorial_psalm = responsorialPsalm.textContent.trim();
-  }
+        // Extract gospel reading
+        const gospelReading = doc.querySelector('.gospel');
+        if (gospelReading) {
+            readings.gospel_reading = gospelReading.textContent.trim();
+        }
 
-  // Extract gospel reading
-  const gospelReading = doc.querySelector('.gospel');
-  if (gospelReading) {
-    readings.gospel_reading = gospelReading.textContent.trim();
-  }
-
-  return readings;
+        return readings;
+    } catch (error) {
+        console.error(error);
+        document.getElementById('reading-content').innerHTML = `<p>An error occurred while loading the daily readings.</p>`;
+    }
 }
 
 // Run the script
